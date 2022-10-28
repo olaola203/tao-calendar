@@ -132,6 +132,8 @@ export interface ITemplateConfig {
     popupDetailBody?: (schedule: ISchedule) => string;
     popupEdit?: () => string;
     popupDelete?: () => string;
+    customTask?: (schedule: ISchedule) => string;
+    customTaskTitle?: () => string;
 }
 
 export interface IWeekOptions {
@@ -234,7 +236,7 @@ export interface IOptions {
     disableClick?: boolean;
     isReadOnly?: boolean;
     usageStatistics?: boolean;
-    taskList?: [];
+    taskList?: string[];
 }
 
 export default class Calendar {
