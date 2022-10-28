@@ -8959,10 +8959,30 @@
                 Calendar.prototype._setAdditionalInternalOptions = function (options) {
                     var timezones = options.timezones || [];
 
+                    var customTask = function (model) {
+                        return model.title;
+                    };
+                    var customTaskTitle = function (taskName) {
+                        var className = config.classname('left-content');
+                        return '<span class="' + className + '">' + taskName + '</span>';
+                    };
                     util.forEach(options.template, function (func, name) {
                         if (func) {
                             Handlebars.registerHelper(name + '-tmpl', func);
                         }
+                        if (name === 'customTask') {
+                            customTask = func;
+                        }
+                        if (name === 'customTaskTitle') {
+                            customTaskTitle = func;
+                        }
+                    });
+
+                    // TrieuVD_customTask template
+                    var taskList = options.taskList;
+                    util.forEach(taskList, function (taskName) {
+                        Handlebars.registerHelper(taskName + '-tmpl', customTask);
+                        Handlebars.registerHelper(taskName + 'Title-tmpl', customTaskTitle);
                     });
 
                     util.forEach(options.calendars || [], function (calendar) {
@@ -10543,36 +10563,6 @@
                         show: true
                     },
                     {
-                        name: 'task1',
-                        type: 'daygrid',
-                        minHeight: 40,
-                        maxHeight: 120,
-                        showExpandableButton: true,
-                        maxExpandableHeight: 210,
-                        handlers: ['click', 'move'],
-                        show: true
-                    },
-                    {
-                        name: 'task2',
-                        type: 'daygrid',
-                        minHeight: 40,
-                        maxHeight: 120,
-                        showExpandableButton: true,
-                        maxExpandableHeight: 210,
-                        handlers: ['click', 'move'],
-                        show: true
-                    },
-                    {
-                        name: 'task3',
-                        type: 'daygrid',
-                        minHeight: 40,
-                        maxHeight: 120,
-                        showExpandableButton: true,
-                        maxExpandableHeight: 210,
-                        handlers: ['click', 'move'],
-                        show: true
-                    },
-                    {
                         name: 'allday',
                         type: 'daygrid',
                         minHeight: 30,
@@ -10591,10 +10581,10 @@
                     }
                 ];
 
+                var CUSTOM_PANELS = [];
+
                 /* eslint-disable complexity*/
                 module.exports = function (baseController, layoutContainer, dragHandler, options, viewName) {
-
-                    console.log();
 
                     var panels = [],
                         vpanels = [];
@@ -10606,15 +10596,30 @@
                     var viewVisibilities = {
                         'milestone': util.isArray(taskView) ? util.inArray('milestone', taskView) >= 0 : taskView,
                         'task': util.isArray(taskView) ? util.inArray('task', taskView) >= 0 : taskView,
-                        'task1': util.isArray(taskView) ? util.inArray('task1', taskView) >= 0 : taskView,
-                        'task2': util.isArray(taskView) ? util.inArray('task2', taskView) >= 0 : taskView,
-                        'task3': util.isArray(taskView) ? util.inArray('task3', taskView) >= 0 : taskView,
                         'allday': util.isArray(scheduleView) ? util.inArray('allday', scheduleView) >= 0 : scheduleView,
                         'time': util.isArray(scheduleView) ? util.inArray('time', scheduleView) >= 0 : scheduleView
                     };
 
+                    // TrieuVD_custom panels 
+                    var taskList = options.taskList;
+                    util.forEach(taskList, function (taskName) {
+                        var panel = {
+                            name: taskName,
+                            type: 'daygrid',
+                            minHeight: 40,
+                            maxHeight: 120,
+                            showExpandableButton: true,
+                            maxExpandableHeight: 210,
+                            handlers: ['click', 'move'],
+                            show: true
+                        };
+                        CUSTOM_PANELS.push(panel);
+                        viewVisibilities[taskName] = util.isArray(taskView) ? util.inArray(taskName, taskView) >= 0 : taskView;
+                    });
+                    CUSTOM_PANELS = CUSTOM_PANELS.concat(DEFAULT_PANELS);
+
                     // Make panels by view sequence and visibilities
-                    util.forEach(DEFAULT_PANELS, function (panel) {
+                    util.forEach(CUSTOM_PANELS, function (panel) {
                         var name = panel.name;
 
                         panel = util.extend({}, panel);
@@ -21002,7 +21007,7 @@
                     },
                     'popupDelete-tmpl': function () {
                         return 'Delete';
-                    }
+                    },
                 };
 
                 /**
