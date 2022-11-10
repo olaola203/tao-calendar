@@ -10601,6 +10601,7 @@
                     };
 
                     // TrieuVD_custom panels 
+                    var CUSTOM_PANELS = []; //TienNT21 fix change view 
                     var taskList = options.taskList;
                     util.forEach(taskList, function (taskName) {
                         var panel = {
@@ -18581,7 +18582,9 @@
                     // month day grid cell 'day'
                     'month.holidayExceptThisMonth.color': 'rgba(255, 64, 64, 0.4)',
                     'month.dayExceptThisMonth.color': 'rgba(51, 51, 51, 0.4)',
-                    'month.weekend.backgroundColor': 'inherit',
+                    'month.weekend.backgroundColor': 'inherit',        
+                    'month.saturday.backgroundColor': 'inherit',
+                    'month.sunday.backgroundColor': 'inherit',
                     'month.day.fontSize': '14px',
 
                     // month schedule style
@@ -18613,6 +18616,8 @@
                     'week.dayname.textAlign': 'left',
                     'week.today.color': '#333',
                     'week.pastDay.color': '#bbb',
+                    'week.saturday.backgroundColor': 'inherit',
+                    'week.sunday.backgroundColor': 'inherit',
 
                     // week vertical panel 'vpanel'
                     'week.vpanelSplitter.border': '1px solid #e5e5e5',
@@ -23385,7 +23390,8 @@
                         },
                         setViewModelFunc: function (viewModel, matrices) {
                             viewModel.schedulesInDateRange[name] = matrices;
-                        }
+                        },
+
                     }, options.week);
 
                     this.handler = {};
@@ -23597,6 +23603,9 @@
                         styles.leftPaddingRight = theme.week.daygridLeft.paddingRight;
                         styles.leftBorderRight = theme.week.daygridLeft.borderRight;
 
+                        styles.saturdayBackgroundColor =  theme.week.saturday.backgroundColor;
+                        styles.sundayBackgroundColor =  theme.week.sunday.backgroundColor;
+
                         if (!collapsed && timezonesLength > 1) {
                             numberAndUnit = common.parseUnit(styles.leftWidth);
                             styles.leftWidth = (numberAndUnit[0] * timezonesLength) + numberAndUnit[1];
@@ -23616,11 +23625,21 @@
                 function getWeekBackgroundColor(day, isToday, styles) {
                     var backgroundColor = '';
 
-                    if (day === 0 || day === 6) {
+                    /*if (day === 0 || day === 6) {
                         backgroundColor = styles.weekendBackgroundColor;
-                    } else if (isToday) {
+                    } */
+                    if (isToday) {
                         backgroundColor = styles.todayBackgroundColor;
-                    } else {
+                    
+                    }else if (day === 6){
+                        //custom backgroundColor saturday
+                        backgroundColor =  styles.saturdayBackgroundColor;
+
+                    }else if (day === 0){
+                        //custom backgroundColor sunday
+                        backgroundColor =  styles.sundayBackgroundColor;
+                    }
+                     else {
                         backgroundColor = styles.backgroundColor;
                     }
 
@@ -25418,9 +25437,12 @@
                     var color = '';
 
                     if (theme) {
-                        if (day === 0 || day === 6) {
-                            color = theme.month.weekend.backgroundColor;
-                        } else {
+                        if (day === 6) {
+                            color = theme.month.saturday.backgroundColor;
+                        }
+                         else if (day === 0) {
+                            color = theme.month.sunday.backgroundColor;
+                        }  else {
                             color = 'inherit';
                         }
                     }

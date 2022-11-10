@@ -237,6 +237,7 @@ export interface IOptions {
     isReadOnly?: boolean;
     usageStatistics?: boolean;
     taskList?: string[];
+
 }
 
 export default class Calendar {
