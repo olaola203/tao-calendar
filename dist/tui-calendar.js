@@ -10601,17 +10601,17 @@
                     };
 
                     // TrieuVD_custom panels 
-                    var CUSTOM_PANELS = []; //TienNT21 fix change view 
+                    var CUSTOM_PANELS = []; // fix change view 
                     var taskList = options.taskList;
                     util.forEach(taskList, function (taskName) {
                         var panel = {
                             name: taskName,
                             type: 'daygrid',
-                            minHeight: 40,
-                            maxHeight: 120,
+                            minHeight:options.week.minHeightGrid  || 40,
+                            maxHeight:options.week.maxHeightGrid || 280,
                             showExpandableButton: true,
-                            maxExpandableHeight: 210,
-                            handlers: ['click', 'move'],
+                            maxExpandableHeight:options.week.maxExpandableHeight || 300,
+                            handlers: ['click', 'move','resize'],
                             show: true
                         };
                         CUSTOM_PANELS.push(panel);

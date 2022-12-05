@@ -133,7 +133,7 @@ export interface ITemplateConfig {
     popupEdit?: () => string;
     popupDelete?: () => string;
     customTask?: (schedule: ISchedule) => string;
-    customTaskTitle?: () => string;
+    customTaskTitle?: (taskName: string) => string;
 }
 
 export interface IWeekOptions {
@@ -145,6 +145,9 @@ export interface IWeekOptions {
     timezonesCollapsed?: boolean;
     hourStart?: number;
     hourEnd?: number;
+    minHeightGrid?: number;
+    maxHeightGrid?: number;
+    maxExpandableHeight?: number;
 }
 
 export interface IMonthOptions {
